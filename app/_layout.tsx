@@ -2,6 +2,7 @@ import { Stack } from 'expo-router';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { AlertProvider, AuthProvider } from '@/template';
 import { ThemeProvider } from '@/contexts/ThemeContext';
+import { IncomingCallOverlay } from '@/components/call/IncomingCallOverlay';
 
 export default function RootLayout() {
   return (
@@ -20,6 +21,7 @@ export default function RootLayout() {
               <Stack.Screen name="search" options={{ animation: 'slide_from_bottom' }} />
               <Stack.Screen name="starred" options={{ animation: 'slide_from_right' }} />
             </Stack>
+            <IncomingCallOverlay />
           </AuthProvider>
         </ThemeProvider>
       </SafeAreaProvider>
