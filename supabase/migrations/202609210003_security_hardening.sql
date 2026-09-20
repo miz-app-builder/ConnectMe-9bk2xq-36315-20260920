@@ -241,3 +241,17 @@ with check (
 );
 
 -- Only authenticated users can call the helper functions.
+
+-- Only the original sender can delete a message for everyone.
+drop policy if exists "messages sender delete" on public.messages;
+create policy "messages sender delete"
+on public.messages for update
+using (auth.uid() = sender_id and public.is_conversation_member(conversation_id))
+with check (auth.uid() = sender_id and public.is_conversation_member(conversation_id));
+
+-- Users may only update their own profile/presence state.
+drop policy if exists "profile self update" on public.user_profiles;
+create policy "profile self update"
+on public.user_profiles for update
+using (auth.uid() = id)
+with check (auth.uid() = id);
