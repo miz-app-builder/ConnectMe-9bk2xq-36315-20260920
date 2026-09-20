@@ -23,7 +23,7 @@ export default function ChatsScreen() {
 
       {/* Header */}
       <View style={[styles.header, { backgroundColor: colors.header, paddingTop: insets.top + 8, borderBottomColor: colors.border }]}>
-        <Text style={[styles.headerTitle, { color: colors.text }]}>ConnectMe</Text>
+        <Text style={[styles.headerTitle, { color: colors.text }]}>NexTalk</Text>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 16 }}>
           <Pressable onPress={() => router.push('/search')} hitSlop={8} style={({ pressed }) => ({ opacity: pressed ? 0.7 : 1 })}>
             <MaterialIcons name="search" size={24} color={COLORS.primary} />
