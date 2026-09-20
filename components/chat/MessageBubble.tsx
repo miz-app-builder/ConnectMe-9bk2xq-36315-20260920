@@ -78,7 +78,7 @@ function VoiceBubble({ message, isSent, colors }: { message: Message; isSent: bo
     if (sound) { await sound.playAsync(); setPlaying(true); return; }
     try {
       await Audio.setAudioModeAsync({ playsInSilentModeIOS: true });
-      const { sound: newSound } = await Audio.loadAsync({ uri: message.audio_url }, {}, false);
+      const { sound: newSound } = await Audio.Sound.createAsync({ uri: message.audio_url }, {}, false);
       newSound.setOnPlaybackStatusUpdate((status: AVPlaybackStatus) => {
         if (!status.isLoaded) return;
         const dur = status.durationMillis || 1;
