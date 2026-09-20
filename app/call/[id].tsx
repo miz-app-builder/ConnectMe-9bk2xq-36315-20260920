@@ -43,7 +43,8 @@ export default function CallScreen() {
   const [cameraOff, setCameraOff] = useState(false);
   const pcRef = useRef<any>(null);
   const streamRef = useRef<any>(null);
-  const mountedRef = useRef(true);\n  const pendingIceRef = useRef<any[]>([]);
+  const mountedRef = useRef(true);
+  const pendingIceRef = useRef<any[]>([]);
 
   const endCall = useCallback(async () => {
     if (!id || !user?.id) return;
