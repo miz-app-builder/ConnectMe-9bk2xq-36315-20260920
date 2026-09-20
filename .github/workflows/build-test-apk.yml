@@ -1,4 +1,4 @@
-name: NexTalk Test APK
+name: NexTalk Direct Android APK
 
 on:
   workflow_dispatch:
@@ -8,7 +8,7 @@ on:
 
 jobs:
   build-apk:
-    name: Build Android Test APK
+    name: Build Android Test APK Directly
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -19,14 +19,26 @@ jobs:
         with:
           node-version: 24
 
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
       - name: Install dependencies
         run: npm install --legacy-peer-deps
 
-      - name: Setup Expo/EAS
-        uses: expo/expo-github-action@v8
-        with:
-          eas-version: latest
-          token: ${{ secrets.EXPO_TOKEN }}
+      - name: Generate Android project
+        run: npx expo prebuild --platform android --no-install --non-interactive
 
-      - name: Build Android APK
-        run: eas build --platform android --profile preview --non-interactive --wait
+      - name: Build debug APK
+        working-directory: android
+        run: ./gradlew assembleDebug --no-daemon --stacktrace
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: NexTalk-test-apk
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+          retention-days: 7
