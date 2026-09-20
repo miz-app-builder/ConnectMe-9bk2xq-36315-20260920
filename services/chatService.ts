@@ -36,7 +36,7 @@ export const getOrCreateConversation = async (
 
   const { data: conv, error: convErr } = await supabase
     .from('conversations')
-    .insert({ updated_at: new Date().toISOString(), is_group: false })
+    .insert({ updated_at: new Date().toISOString(), is_group: false, created_by: userId })
     .select()
     .single();
 
