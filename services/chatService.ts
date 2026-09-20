@@ -94,7 +94,7 @@ export const getGroupMembers = async (
       user_id: r.user_id,
       role: r.role,
       joined_at: r.joined_at,
-      profile: r.profile as UserProfile,
+      profile: r.profile as unknown as UserProfile,
     })),
     error: null,
   };
@@ -227,7 +227,7 @@ export const getConversationParticipant = async (
     .single();
 
   if (error || !data) return { data: null, error: error?.message || null };
-  return { data: (data as any).user_profiles as UserProfile, error: null };
+  return { data: (data as any).user_profiles as unknown as UserProfile, error: null };
 };
 
 // ── Messages ───────────────────────────────────────────────────
