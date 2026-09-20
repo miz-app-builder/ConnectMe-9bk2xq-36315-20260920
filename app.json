@@ -44,10 +44,7 @@
         "expo-notifications",
         {
           "icon": "./assets/images/logo.png",
-          "color": "#25D366",
-          "sounds": [
-            "default"
-          ]
+          "color": "#25D366"
         }
       ],
       "@config-plugins/react-native-webrtc"
