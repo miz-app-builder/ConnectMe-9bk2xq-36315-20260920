@@ -1,4 +1,6 @@
-import { supabase } from '@/template/supabase';
+import { getSupabaseClient } from '@/template';
+
+const supabase = getSupabaseClient();
 
 export type CallType = 'audio' | 'video';
 export type CallStatus = 'ringing' | 'accepted' | 'rejected' | 'missed' | 'ended';
@@ -68,7 +70,7 @@ export function subscribeToCallSignals(callId: string, onSignal: (signal: any) =
     .on(
       'postgres_changes',
       { event: 'INSERT', schema: 'public', table: 'call_signals', filter: `call_id=eq.${callId}` },
-      payload => onSignal(payload.new),
+      (payload: any) => onSignal(payload.new),
     )
     .subscribe();
 
@@ -81,7 +83,7 @@ export function subscribeToCall(callId: string, onChange: (call: CallRecord) => 
     .on(
       'postgres_changes',
       { event: '*', schema: 'public', table: 'calls', filter: `id=eq.${callId}` },
-      payload => onChange(payload.new as CallRecord),
+      (payload: any) => onChange(payload.new as CallRecord),
     )
     .subscribe();
 
