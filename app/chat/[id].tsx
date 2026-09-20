@@ -25,6 +25,7 @@ import { MessageBubble } from '@/components/chat/MessageBubble';
 import { Avatar } from '@/components/ui/Avatar';
 import { UserProfile, Message, GroupMember } from '@/types';
 import { FONTS, SPACING, RADIUS, COLORS } from '@/constants/theme';
+import { createCall } from '@/services/callService';
 
 export default function ChatScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -277,6 +278,15 @@ export default function ChatScreen() {
 
   const subTitleColor = typingLabel ? COLORS.primary : headerData?.isOnline ? '#25D366' : colors.textSecondary;
 
+  const startCall = useCallback(async (callType: 'audio' | 'video') => {
+    if (!user?.id || !id || isGroup) return;
+    const { data, error } = await getConversationParticipant(id, user.id);
+    if (error || !data) { showAlert('Call unavailable', error || 'Could not find contact'); return; }
+    const result = await createCall(user.id, data.id, callType);
+    if (result.error || !result.data) { showAlert('Call failed', result.error || 'Could not start call'); return; }
+    router.push({ pathname: '/call/[id]', params: { id: result.data.id } });
+  }, [user?.id, id, isGroup, showAlert, router]);
+
   return (
     <View style={[styles.root, { backgroundColor: colors.chatBg }]}>
       <StatusBar style={isDark ? 'light' : 'dark'} />
@@ -301,6 +311,16 @@ export default function ChatScreen() {
           </View>
         </Pressable>
         <View style={styles.headerActions}>
+          {!isGroup && (
+            <>
+              <Pressable onPress={() => startCall('audio')} hitSlop={8}>
+                <MaterialIcons name="call" size={22} color={colors.icon} />
+              </Pressable>
+              <Pressable onPress={() => startCall('video')} hitSlop={8}>
+                <MaterialIcons name="videocam" size={24} color={colors.icon} />
+              </Pressable>
+            </>
+          )}
           {pinnedMessages.length > 0 && (
             <Pressable onPress={() => setShowPinned(!showPinned)} hitSlop={8}>
               <MaterialIcons name="push-pin" size={22} color={showPinned ? COLORS.primary : colors.icon} />
