@@ -108,6 +108,14 @@ export default function SettingsScreen() {
           />
           <View style={[styles.rowDivider, { backgroundColor: colors.border }]} />
           <SettingRow
+            icon="phone"
+            label="Call History"
+            colors={colors}
+            onPress={() => router.push('/call-history')}
+            showChevron
+          />
+          <View style={[styles.rowDivider, { backgroundColor: colors.border }]} />
+          <SettingRow
             icon="lock"
             label="Privacy & Security"
             colors={colors}
