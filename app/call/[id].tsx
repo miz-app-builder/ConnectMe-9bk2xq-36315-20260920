@@ -17,7 +17,18 @@ import {
   updateCall, type CallRecord,
 } from '@/services/callService';
 
-const RTC_CONFIG = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] };
+const RTC_CONFIG = {
+  iceServers: [
+    { urls: 'stun:stun.l.google.com:19302' },
+    ...(process.env.EXPO_PUBLIC_TURN_URL
+      ? [{
+          urls: process.env.EXPO_PUBLIC_TURN_URL,
+          username: process.env.EXPO_PUBLIC_TURN_USERNAME,
+          credential: process.env.EXPO_PUBLIC_TURN_CREDENTIAL,
+        }]
+      : []),
+  ],
+};
 
 export default function CallScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -32,7 +43,7 @@ export default function CallScreen() {
   const [cameraOff, setCameraOff] = useState(false);
   const pcRef = useRef<any>(null);
   const streamRef = useRef<any>(null);
-  const mountedRef = useRef(true);
+  const mountedRef = useRef(true);\n  const pendingIceRef = useRef<any[]>([]);
 
   const endCall = useCallback(async () => {
     if (!id || !user?.id) return;
@@ -86,7 +97,7 @@ export default function CallScreen() {
 
       unsubscribeSignals = subscribeToCallSignals(id, async signal => {
         if (signal.sender_id === user.id) return;
-        if (signal.signal_type === 'offer' && !data.offer) {
+        if (signal.signal_type === 'offer' && !pc.remoteDescription) {
           await pc.setRemoteDescription(new RTCSessionDescription(signal.payload));
           const answer = await pc.createAnswer();
           await pc.setLocalDescription(answer);
@@ -96,7 +107,11 @@ export default function CallScreen() {
           await pc.setRemoteDescription(new RTCSessionDescription(signal.payload));
           await updateCall(id, { status: 'accepted', started_at: new Date().toISOString() });
         } else if (signal.signal_type === 'ice') {
-          try { await pc.addIceCandidate(new RTCIceCandidate(signal.payload)); } catch {}
+          if (!pc.remoteDescription) {
+            pendingIceRef.current.push(signal.payload);
+          } else {
+            try { await pc.addIceCandidate(new RTCIceCandidate(signal.payload)); } catch {}
+          }
         } else if (signal.signal_type === 'hangup') {
           await updateCall(id, { status: 'ended', ended_at: new Date().toISOString() });
           if (mountedRef.current) router.back();
@@ -115,7 +130,7 @@ export default function CallScreen() {
         await pc.setLocalDescription(offer);
         await sendCallSignal(id, user.id, 'offer', offer);
         await updateCall(id, { offer, status: 'ringing' });
-      } else if (data.offer && !data.answer) {
+      } else if (data.offer && !data.answer && !pc.remoteDescription) {
         await pc.setRemoteDescription(new RTCSessionDescription(data.offer));
         const answer = await pc.createAnswer();
         await pc.setLocalDescription(answer);
