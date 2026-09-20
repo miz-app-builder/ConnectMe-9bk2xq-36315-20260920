@@ -126,6 +126,13 @@ begin
      or old.created_at <> new.created_at then
     raise exception 'message identity fields cannot be changed';
   end if;
+  if old.content is distinct from new.content
+     and not (old.deleted_for_everyone = false and new.deleted_for_everyone = true and new.content = 'This message was deleted') then
+    raise exception 'message content can only change when deleting for everyone';
+  end if;
+  if old.deleted_for_everyone = true and new.deleted_for_everyone <> true then
+    raise exception 'deleted message cannot be restored';
+  end if;
   return new;
 end;
 $$;
