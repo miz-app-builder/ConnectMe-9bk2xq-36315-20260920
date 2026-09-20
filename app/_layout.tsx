@@ -13,26 +13,12 @@ export default function RootLayout() {
               <Stack.Screen name="index" />
               <Stack.Screen name="login" />
               <Stack.Screen name="(tabs)" />
-              <Stack.Screen
-                name="chat/[id]"
-                options={{ headerShown: false, animation: 'slide_from_right' }}
-              />
-              <Stack.Screen
-                name="edit-profile"
-                options={{ headerShown: false, animation: 'slide_from_bottom' }}
-              />
-              <Stack.Screen
-                name="group-info"
-                options={{ headerShown: false, animation: 'slide_from_right' }}
-              />
-              <Stack.Screen
-                name="search"
-                options={{ headerShown: false, animation: 'slide_from_bottom' }}
-              />
-              <Stack.Screen
-                name="starred"
-                options={{ headerShown: false, animation: 'slide_from_right' }}
-              />
+              <Stack.Screen name="chat/[id]" options={{ animation: 'slide_from_right' }} />
+              <Stack.Screen name="call/[id]" options={{ animation: 'fade' }} />
+              <Stack.Screen name="edit-profile" options={{ animation: 'slide_from_bottom' }} />
+              <Stack.Screen name="group-info" options={{ animation: 'slide_from_right' }} />
+              <Stack.Screen name="search" options={{ animation: 'slide_from_bottom' }} />
+              <Stack.Screen name="starred" options={{ animation: 'slide_from_right' }} />
             </Stack>
           </AuthProvider>
         </ThemeProvider>
