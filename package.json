@@ -8,7 +8,10 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "lint": "expo lint"
+    "lint": "expo lint",
+    "start:dev": "expo start --dev-client",
+    "prebuild:android": "expo prebuild --platform android",
+    "doctor": "expo doctor"
   },
   "dependencies": {
     "@expo/metro-runtime": "5.0.4",
@@ -103,7 +106,7 @@
     "react-native-maps": "1.20.1",
     "react-native-qrcode-svg": "^6.3.15",
     "react-native-view-shot": "4.0.3",
-    "react-native-webrtc": "^124.0.6",
+    "react-native-webrtc": "^124.0.5",
     "@apollo/client": "^3.4.10",
     "@expo/styleguide-native": "^1.0.1",
     "@graphql-codegen/introspection": "^2.1.1",
