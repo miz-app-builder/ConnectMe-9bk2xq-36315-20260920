@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Alert, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View, Vibration } from 'react-native';
 import { useRouter } from 'expo-router';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useAuth } from '@/template';
@@ -24,23 +24,31 @@ export function IncomingCallOverlay() {
       const { data } = await getCall(next.id);
       if (!mounted.current || !data || data.status !== 'ringing') return;
       setCall(data);
+      Vibration.vibrate([0, 700, 500], true);
+      setTimeout(async () => {
+        const latest = await getCall(data.id);
+        if (latest.data?.status === 'ringing') {
+          await updateCall(data.id, { status: 'missed', ended_at: new Date().toISOString() });
+          if (mounted.current) { Vibration.cancel(); setCall(null); }
+        }
+      }, 30000);
       const { data: profile } = await getProfile(data.caller_id);
       if (profile) setCallerName(profile.display_name || profile.username || profile.email || 'Incoming call');
     };
     getIncomingRingingCall(user.id).then(({ data }) => { if (data) void show(data); });
     const unsubscribe = subscribeToIncomingCalls(user.id, next => void show(next));
-    return () => { mounted.current = false; unsubscribe(); };
+    return () => { mounted.current = false; unsubscribe(); Vibration.cancel(); };
   }, [user?.id]);
 
   if (!call) return null;
 
   const reject = async () => {
     await updateCall(call.id, { status: 'rejected', ended_at: new Date().toISOString() });
-    if (mounted.current) setCall(null);
+    if (mounted.current) { Vibration.cancel(); setCall(null); }
   };
   const accept = async () => {
     await updateCall(call.id, { status: 'accepted', started_at: new Date().toISOString() });
-    if (mounted.current) setCall(null);
+    if (mounted.current) { Vibration.cancel(); setCall(null); }
     router.push({ pathname: '/call/[id]', params: { id: call.id } });
   };
 
