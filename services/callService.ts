@@ -9,8 +9,8 @@ export interface CallRecord {
   callee_id: string;
   call_type: CallType;
   status: CallStatus;
-  offer?: RTCSessionDescriptionInit | null;
-  answer?: RTCSessionDescriptionInit | null;
+  offer?: any | null;
+  answer?: any | null;
   started_at?: string | null;
   ended_at?: string | null;
   created_at: string;
