@@ -81,3 +81,52 @@ do $$ begin
   alter publication supabase_realtime add table public.call_signals;
 exception when duplicate_object then null;
 end $$;
+
+-- Safety constraints for call creation and state transitions.
+alter table public.calls
+  drop constraint if exists calls_not_self_check;
+alter table public.calls
+  add constraint calls_not_self_check check (caller_id <> callee_id);
+
+create or replace function public.validate_call_update()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  if old.caller_id <> new.caller_id or old.callee_id <> new.callee_id
+     or old.call_type <> new.call_type or old.created_at <> new.created_at then
+    raise exception 'immutable call fields cannot be changed';
+  end if;
+  if old.status in ('rejected','missed','ended') and new.status <> old.status then
+    raise exception 'terminal call status cannot be reopened';
+  end if;
+  if old.status = 'ringing' and new.status not in ('ringing','accepted','rejected','missed','ended') then
+    raise exception 'invalid call transition';
+  end if;
+  return new;
+end;
+$$;
+
+drop trigger if exists validate_call_update on public.calls;
+create trigger validate_call_update
+before update on public.calls
+for each row execute function public.validate_call_update();
+
+-- Only the caller may originate offer/hangup signals; the callee may send answer/ICE.
+drop policy if exists "call participants can send signals" on public.call_signals;
+create policy "call participants can send signals"
+on public.call_signals for insert
+with check (
+  auth.uid() = sender_id
+  and exists (
+    select 1 from public.calls c
+    where c.id = call_signals.call_id
+      and (
+        (auth.uid() = c.caller_id and signal_type in ('offer','ice','hangup'))
+        or
+        (auth.uid() = c.callee_id and signal_type in ('answer','ice','hangup'))
+      )
+  )
+);
