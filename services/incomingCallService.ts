@@ -1,4 +1,6 @@
-import { supabase } from '@/template/supabase';
+import { getSupabaseClient } from '@/template';
+
+const supabase = getSupabaseClient();
 
 export async function getIncomingRingingCall(userId: string) {
   const { data, error } = await supabase.from('calls').select('*')
@@ -12,7 +14,7 @@ export function subscribeToIncomingCalls(userId: string, onCall: (call: any) => 
     .on('postgres_changes', {
       event: 'INSERT', schema: 'public', table: 'calls',
       filter: `callee_id=eq.${userId}`,
-    }, payload => {
+    }, (payload: any) => {
       if (payload.new?.status === 'ringing') onCall(payload.new);
     })
     .subscribe();
