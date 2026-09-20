@@ -9,8 +9,21 @@ const cors = {
 Deno.serve(async req => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: cors });
   try {
+    const authHeader = req.headers.get('Authorization') || '';
+    const accessToken = authHeader.replace(/^Bearer\\s+/i, '');
+    if (!accessToken) return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401, headers: cors });
+
     const { call_id } = await req.json();
     if (!call_id) return new Response(JSON.stringify({ error: 'call_id is required' }), { status: 400, headers: cors });
+
+    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+    const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
+    const userClient = createClient(supabaseUrl, supabaseAnonKey, {
+      global: { headers: { Authorization: `Bearer ${accessToken}` } },
+      auth: { persistSession: false },
+    });
+    const { data: { user: callerUser }, error: authError } = await userClient.auth.getUser(accessToken);
+    if (authError || !callerUser) return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401, headers: cors });
 
     const admin = createClient(
       Deno.env.get('SUPABASE_URL')!,
@@ -20,6 +33,7 @@ Deno.serve(async req => {
 
     const { data: call, error: callError } = await admin.from('calls').select('*').eq('id', call_id).single();
     if (callError || !call) return new Response(JSON.stringify({ error: callError?.message || 'Call not found' }), { status: 404, headers: cors });
+    if (call.caller_id !== callerUser.id) return new Response(JSON.stringify({ error: 'Forbidden' }), { status: 403, headers: cors });
 
     const { data: profile } = await admin.from('user_profiles').select('push_token, display_name, username').eq('id', call.callee_id).single();
     if (!profile?.push_token) return new Response(JSON.stringify({ sent: false, reason: 'no_push_token' }), { headers: cors });
