@@ -73,3 +73,12 @@ This project is private ("private": true). For collaboration inquiries, please c
 ---
 
 Feel free to add project screenshots, API documentation, feature descriptions, or any other information as needed.
+
+
+## Call feature setup
+
+The app now includes the WebRTC call UI and Supabase signaling/history migration under `supabase/migrations/202609210001_calls.sql`.
+
+Before testing calls against the live database, apply that SQL migration in the project's Supabase SQL editor. Android builds must include microphone and camera permissions; these are configured in `app.json`.
+
+The call screen uses a public STUN server for initial connectivity. A production deployment should add TURN servers for reliable connections across restrictive/mobile networks and should add push notifications for calls received while the app is backgrounded or closed.
