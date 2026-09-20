@@ -190,7 +190,7 @@ export default function LoginScreen() {
           />
           <View style={[styles.heroOverlay, { backgroundColor: colors.overlay }]} />
           <View style={styles.heroBrand}>
-            <Text style={styles.heroTitle}>ConnectMe</Text>
+            <Text style={styles.heroTitle}>NexTalk</Text>
             <Text style={styles.heroSub}>Private messaging for friends & family</Text>
           </View>
         </View>
