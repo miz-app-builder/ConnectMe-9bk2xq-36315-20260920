@@ -22,6 +22,9 @@ export async function createCall(callerId: string, calleeId: string, callType: C
     .insert({ caller_id: callerId, callee_id: calleeId, call_type: callType })
     .select('*')
     .single();
+  if (data) {
+    void supabase.functions.invoke('send-call-push', { body: { call_id: data.id } }).catch(() => undefined);
+  }
   return { data: data as CallRecord | null, error: error?.message || null };
 }
 
