@@ -195,7 +195,7 @@ export const getConversations = async (
         } as Conversation;
       } else {
         const otherPart = (allParts || []).find((p: any) => p.conversation_id === cid && p.user_id !== userId);
-        const otherUser = otherPart?.user_profiles as UserProfile | null;
+        const otherUser = otherPart?.user_profiles as unknown as UserProfile | null;
         if (!otherUser) return null;
         return {
           id: cid,
