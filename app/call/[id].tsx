@@ -115,6 +115,12 @@ export default function CallScreen() {
         await pc.setLocalDescription(offer);
         await sendCallSignal(id, user.id, 'offer', offer);
         await updateCall(id, { offer, status: 'ringing' });
+      } else if (data.offer && !data.answer) {
+        await pc.setRemoteDescription(new RTCSessionDescription(data.offer));
+        const answer = await pc.createAnswer();
+        await pc.setLocalDescription(answer);
+        await sendCallSignal(id, user.id, 'answer', answer);
+        await updateCall(id, { answer, status: 'accepted', started_at: new Date().toISOString() });
       }
     })().catch(() => {
       if (mountedRef.current) router.back();
@@ -144,7 +150,7 @@ export default function CallScreen() {
       ) : (
         <View style={styles.audioStage}>
           <MaterialIcons name={isVideo ? 'videocam' : 'call'} size={72} color="#25D366" />
-          <Text style={styles.stageTitle}>{connected ? 'Connected' : 'Calling...'}</Text>
+          <Text style={styles.stageTitle}>{connected ? 'Connected' : call.status === 'accepted' ? 'Connecting...' : 'Calling...'}</Text>
         </View>
       )}
       {isVideo && localStream && !cameraOff ? (
@@ -158,8 +164,11 @@ export default function CallScreen() {
 
       <View style={styles.controls}>
         <Pressable onPress={() => {
-          setMuted(v => !v);
-          localStream?.getAudioTracks().forEach((t: any) => { t.enabled = muted; });
+          setMuted(v => {
+            const next = !v;
+            localStream?.getAudioTracks().forEach((t: any) => { t.enabled = !next; });
+            return next;
+          });
         }} style={styles.control}>
           <MaterialIcons name={muted ? 'mic-off' : 'mic'} size={24} color="#fff" />
         </Pressable>
