@@ -10,7 +10,7 @@ Deno.serve(async req => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: cors });
   try {
     const authHeader = req.headers.get('Authorization') || '';
-    const accessToken = authHeader.replace(/^Bearer\\s+/i, '');
+    const accessToken = authHeader.replace(/^Bearer\s+/i, '');
     if (!accessToken) return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401, headers: cors });
 
     const { call_id } = await req.json();
