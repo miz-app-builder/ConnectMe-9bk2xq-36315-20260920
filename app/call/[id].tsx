@@ -189,8 +189,11 @@ export default function CallScreen() {
         </Pressable>
         {isVideo && (
           <Pressable onPress={() => {
-            setCameraOff(v => !v);
-            localStream?.getVideoTracks().forEach((t: any) => { t.enabled = cameraOff; });
+            setCameraOff(v => {
+              const next = !v;
+              localStream?.getVideoTracks().forEach((t: any) => { t.enabled = !next; });
+              return next;
+            });
           }} style={styles.control}>
             <MaterialIcons name={cameraOff ? 'videocam-off' : 'videocam'} size={24} color="#fff" />
           </Pressable>
