@@ -16,6 +16,7 @@ export default function RootLayout() {
               <Stack.Screen name="(tabs)" />
               <Stack.Screen name="chat/[id]" options={{ animation: 'slide_from_right' }} />
               <Stack.Screen name="call/[id]" options={{ animation: 'fade' }} />
+              <Stack.Screen name="call-history" options={{ animation: 'slide_from_right' }} />
               <Stack.Screen name="edit-profile" options={{ animation: 'slide_from_bottom' }} />
               <Stack.Screen name="group-info" options={{ animation: 'slide_from_right' }} />
               <Stack.Screen name="search" options={{ animation: 'slide_from_bottom' }} />
