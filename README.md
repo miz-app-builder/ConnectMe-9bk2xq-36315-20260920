@@ -1,9 +1,29 @@
 # NexTalk
 
-Clean V1 Android communication app. Expo + React Native + TypeScript + Supabase. Direct Android Gradle builds; no Expo account required for native compilation.
+NexTalk is a native React Native Android communication app.
 
-## V1 rebuild
-The repository was reset to a minimal NexTalk foundation; legacy template/demo files are intentionally removed.
+## Stack
+- React Native 0.79.7
+- Native Android + Gradle
+- React Navigation
+- Supabase Auth / Realtime
+- react-native-webrtc for calling foundation
+- react-native-config for build-time environment configuration
 
-## Build pipeline
-GitHub Actions runs TypeScript validation and a real Android Gradle debug APK build on `nextalk-v1-clean` pushes.
+## No Expo
+This branch does not use Expo, Expo Router, Expo Go, EAS, or Expo prebuild. Android is a committed native project.
+
+## Environment
+Copy `.env.example` to `.env` and set the Supabase URL and anon key. Mobile client configuration is public by design; never put service-role keys or signing secrets in `.env`.
+
+## Android
+Install dependencies with `npm install`, then use Android Studio/Gradle for the native build. GitHub Actions builds the debug APK directly with Gradle 8.13.
+
+## Current V1
+- Native authentication screen
+- Chats list
+- Contacts search
+- Direct chat
+- Supabase realtime messages
+- Read-state RPC/unread-count backend foundation
+- Native Android project ready for the next calling/notification layers
