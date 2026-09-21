@@ -1,4 +1,4 @@
-import {requireSupabase} from "@/lib/supabase";
+import {requireSupabase} from "./supabase";
 export async function startDirectConversation(otherUserId:string){const db=requireSupabase();const{data,error}=await db.rpc("start_direct_conversation",{p_other_user:otherUserId});if(error)throw error;return data as string}
 export async function listConversations(){const db=requireSupabase();const{data,error}=await db.rpc("my_conversations");if(error)throw error;return data??[]}
 export async function listMessages(conversationId:string){const db=requireSupabase();const{data,error}=await db.from("messages").select("id,conversation_id,sender_id,body,kind,reply_to,created_at,read_at").eq("conversation_id",conversationId).order("created_at",{ascending:true});if(error)throw error;return data??[]}
