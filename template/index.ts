@@ -1,7 +1,3 @@
-// @ts-nocheck
-export * from './core';
-export * from './auth';
-
-// UI exports
-export { useAlert, AlertProvider } from './ui';
-export type { AlertButton, AlertState } from './ui';
+export { AuthProvider, useAuth, useSession } from '@/contexts/AuthContext';
+export { getSupabaseClient } from '@/lib/supabase';
+export { AlertProvider, useAlert } from '@/contexts/AlertContext';
