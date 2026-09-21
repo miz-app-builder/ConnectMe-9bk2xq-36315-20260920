@@ -20,7 +20,8 @@
     "react-native-webrtc": "124.0.5",
     "lucide-react-native": "^0.475.0",
     "react": "19.0.0",
-    "react-native": "0.79.7"
+    "react-native": "0.79.7",
+    "react-native-config": "^1.6.1"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
