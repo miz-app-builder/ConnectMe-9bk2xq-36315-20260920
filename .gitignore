@@ -1,8 +1,6 @@
 node_modules/
-.expo/
-dist/
-android/
-ios/
-.env
+.gradle/
 *.keystore
 *.jks
+local.properties
+.env
