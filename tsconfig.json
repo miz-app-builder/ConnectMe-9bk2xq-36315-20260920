@@ -1,11 +1,1 @@
-{
-  "extends": "expo/tsconfig.base",
-  "compilerOptions": {
-    "strict": true,
-    "paths": {
-      "@/*": ["./*"]
-    }
-  },
-  "include": ["**/*.ts", "**/*.tsx", "expo-env.d.ts"],
-  "exclude": ["supabase/functions/**/*.ts", ".expo/types/**/*.ts"]
-}
+{"extends":"expo/tsconfig.base","compilerOptions":{"strict":true,"paths":{"@/*":["./*"]}},"include":["**/*.ts","**/*.tsx","expo-env.d.ts"],"exclude":["supabase/functions/**/*.ts"]}

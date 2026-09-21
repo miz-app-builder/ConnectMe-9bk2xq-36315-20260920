@@ -1,29 +1,15 @@
 name: NexTalk CI
-
 on:
+  workflow_dispatch:
   push:
-    branches: [main, feature/calls-foundation]
-  pull_request:
-    branches: [main]
-
+    branches: [nextalk-v1-clean]
 jobs:
-  typecheck:
+  check:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with:
-          node-version: 20
+        with: {node-version: 24}
       - run: npm install --legacy-peer-deps
-      - run: npx expo config --type public
       - run: npx tsc --noEmit
-
-  expo-config:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-      - run: npm install --legacy-peer-deps
       - run: npx expo config --type public
