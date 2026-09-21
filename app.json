@@ -1,1 +1,30 @@
-{"expo":{"name":"NexTalk","slug":"nextalk","version":"1.0.0","orientation":"portrait","scheme":"nextalk","userInterfaceStyle":"automatic","newArchEnabled":true,"android":{"package":"com.nextalk.app","adaptiveIcon":{"backgroundColor":"#0B1220"},"permissions":["RECORD_AUDIO","CAMERA","MODIFY_AUDIO_SETTINGS"]},"plugins":["expo-router","expo-notifications","@config-plugins/react-native-webrtc"],"experiments":{"typedRoutes":false}}}
+{
+  "expo": {
+    "name": "NexTalk",
+    "slug": "nextalk",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "scheme": "nextalk",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "android": {
+      "package": "com.nextalk.app",
+      "adaptiveIcon": {
+        "backgroundColor": "#0B1220"
+      },
+      "permissions": [
+        "RECORD_AUDIO",
+        "CAMERA",
+        "MODIFY_AUDIO_SETTINGS"
+      ]
+    },
+    "plugins": [
+      "expo-router",
+      "expo-notifications",
+      "@config-plugins/react-native-webrtc"
+    ],
+    "experiments": {
+      "typedRoutes": false
+    }
+  }
+}
