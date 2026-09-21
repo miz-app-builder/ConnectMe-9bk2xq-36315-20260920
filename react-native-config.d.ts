@@ -1,0 +1,1 @@
+declare module "react-native-config" { export interface NativeConfig { SUPABASE_URL?:string; SUPABASE_ANON_KEY?:string; TURN_URL?:string; TURN_USERNAME?:string; TURN_CREDENTIAL?:string; } const Config:NativeConfig; export default Config; }
