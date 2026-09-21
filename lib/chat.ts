@@ -1,5 +1,6 @@
-import { supabase } from "@/lib/supabase";
-export async function startDirectConversation(otherUserId:string){const{data,error}=await supabase.rpc("start_direct_conversation",{p_other_user:otherUserId});if(error)throw error;return data as string}
-export async function listConversations(){const{data,error}=await supabase.rpc("my_conversations");if(error)throw error;return data??[]}
-export async function listMessages(conversationId:string){const{data,error}=await supabase.from("messages").select("id,conversation_id,sender_id,body,kind,reply_to,created_at,read_at").eq("conversation_id",conversationId).order("created_at",{ascending:true});if(error)throw error;return data??[]}
-export async function sendMessage(conversationId:string,senderId:string,body:string){const text=body.trim();if(!text)return;const{error}=await supabase.from("messages").insert({conversation_id:conversationId,sender_id:senderId,body:text,kind:"text"});if(error)throw error}
+import {requireSupabase} from "@/lib/supabase";
+export async function startDirectConversation(otherUserId:string){const db=requireSupabase();const{data,error}=await db.rpc("start_direct_conversation",{p_other_user:otherUserId});if(error)throw error;return data as string}
+export async function listConversations(){const db=requireSupabase();const{data,error}=await db.rpc("my_conversations");if(error)throw error;return data??[]}
+export async function listMessages(conversationId:string){const db=requireSupabase();const{data,error}=await db.from("messages").select("id,conversation_id,sender_id,body,kind,reply_to,created_at,read_at").eq("conversation_id",conversationId).order("created_at",{ascending:true});if(error)throw error;return data??[]}
+export async function sendMessage(conversationId:string,senderId:string,body:string){const text=body.trim();if(!text)return;const db=requireSupabase();const{error}=await db.from("messages").insert({conversation_id:conversationId,sender_id:senderId,body:text,kind:"text"});if(error)throw error}
+export async function markMessageRead(messageId:string){const db=requireSupabase();const{error}=await db.rpc("mark_message_read",{p_message_id:messageId});if(error)throw error}
